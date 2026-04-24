@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List Life Dashboard-Muhammad Rasyid</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="shortcut icon" href="img/Logo.png" type="image/x-icon">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Warning Banner (hidden by default) -->
+  <div id="warning-banner" class="warning-banner hidden" role="alert">
+    <span id="warning-message"></span>
+    <button id="warning-close" aria-label="Dismiss warning">✕</button>
+  </div>
+
+  <!-- Header: Greeting Widget -->
+  <header class="dashboard-header" data-aos="zoom-out">
+    <div class="greeting-section">
+      <div id="time" class="time-display" aria-live="polite"></div>
+      <div id="date" class="date-display"></div>
+      <div id="greeting-text" class="greeting-text"></div>
+      <span id="name-display" class="name-display"></span>
+      <!-- Inline name editor (hidden until activated) -->
+      <div id="name-editor" class="name-editor hidden">
+        <input id="name-input" type="text" maxlength="50" placeholder="Your name" aria-label="Display name">
+        <button id="name-save">Save</button>
+        <button id="name-cancel">Cancel</button>
+      </div>
+      <button id="edit-name-btn" class="icon-btn" aria-label="Edit name">✏️</button>
+    </div>
+    <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">🌙</button>
+  </header>
+
+  <!-- Main Content: Two-column layout -->
+  <main class="dashboard-main">
+
+    <!-- Left Column: Focus Timer -->
+    <section class="widget timer-widget" aria-labelledby="timer-heading" data-aos="fade-right" data-aos-delay="150">
+      <h2 id="timer-heading">Focus Timer</h2>
+      <div id="timer-display" class="timer-display" aria-live="polite">25:00</div>
+      <div class="timer-controls">
+        <button id="start-btn">Start</button>
+        <button id="stop-btn" disabled>Stop</button>
+        <button id="reset-btn">Reset</button>
+      </div>
+      <div class="timer-config">
+        <label for="duration-input">Duration (min)</label>
+        <input id="duration-input" type="number" min="1" max="120" value="25" aria-describedby="duration-error">
+        <button id="set-duration-btn">Set</button>
+        <span id="duration-error" class="error-msg hidden" role="alert"></span>
+      </div>
+    </section>
+
+    <!-- Right Column: Task List -->
+    <section class="widget tasks-widget" aria-labelledby="tasks-heading" data-aos="fade-left">
+      <h2 id="tasks-heading">Tasks</h2>
+      <div class="task-input-row">
+        <input id="task-input" type="text" placeholder="Add a task…" aria-label="New task" aria-describedby="task-error">
+        <button id="add-task-btn">Add</button>
+      </div>
+      <span id="task-error" class="error-msg hidden" role="alert"></span>
+      <div class="task-sort-row">
+        <label for="sort-select">Sort:</label>
+        <select id="sort-select" aria-label="Sort tasks">
+          <option value="default">Default</option>
+          <option value="az">A–Z</option>
+          <option value="za">Z–A</option>
+          <option value="completed-last">Completed last</option>
+          <option value="completed-first">Completed first</option>
+        </select>
+      </div>
+      <ul id="task-list" class="task-list" aria-label="Task list"></ul>
+      <p class="task-empty-msg" id="task-empty-msg">No tasks yet. Add one above!</p>
+    </section>
+
+  </main>
+
+  <!-- Footer: Quick Links -->
+  <footer class="dashboard-footer" data-aos="fade-up">
+    <section class="widget links-widget" aria-labelledby="links-heading">
+      <h2 id="links-heading">Quick Links</h2>
+      <div class="link-input-row">
+        <input id="link-label-input" type="text" maxlength="30" placeholder="Label" aria-label="Link label">
+        <input id="link-url-input" type="url" placeholder="https://…" aria-label="Link URL" aria-describedby="link-error">
+        <button id="add-link-btn">Add</button>
+      </div>
+      <span id="link-error" class="error-msg hidden" role="alert"></span>
+      <div id="links-container" class="links-container"></div>
+    </section>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+  <script>
+      AOS.init({
+                duration: 1800, 
+                easing: 'ease-in-out-back',
+                once: true,  
+            });
+  </script>
+</body>
+</html>

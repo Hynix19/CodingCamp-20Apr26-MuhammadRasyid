@@ -1,0 +1,493 @@
+/* ===== CSS Custom Properties (Theming) ===== */
+:root {
+  --color-bg: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-header-bg: #6b21a8;
+  --color-header-bg-end: #4f46e5;
+  --color-text: #1a1a1a;
+  --color-text-muted: #6b7280;
+  --color-text-on-header: #ffffff;
+  --color-accent: #7c3aed;
+  --color-border: #e5e7eb;
+  --color-error: #dc2626;
+  --color-success: #16a34a;
+  --color-task-done: #9ca3af;
+  --color-btn-primary: #7c3aed;
+  --color-btn-primary-text: #ffffff;
+  --color-btn-danger: #dc2626;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+[data-theme="dark"] {
+  --color-bg: #111827;
+  --color-surface: #1f2937;
+  --color-text: #f9fafb;
+  --color-text-muted: #9ca3af;
+  --color-border: #374151;
+  --color-task-done: #6b7280;
+  --color-btn-primary: #8b5cf6;
+  --shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* ===== Base Reset & Body ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  transition: background-color 0.2s, color 0.2s;
+  overflow-x: hidden;
+}
+
+/* ===== Warning Banner ===== */
+.warning-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #fef3c7;
+  color: #92400e;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  border-bottom: 1px solid #fcd34d;
+}
+
+[data-theme="dark"] .warning-banner {
+  background-color: #451a03;
+  color: #fcd34d;
+  border-bottom-color: #92400e;
+}
+
+/* ===== Utility ===== */
+.hidden {
+  display: none !important;
+}
+
+.error-msg {
+  color: var(--color-error);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* ===== Header ===== */
+.dashboard-header {
+  background: linear-gradient(135deg, var(--color-header-bg), var(--color-header-bg-end));
+  color: var(--color-text-on-header);
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  /* position: relative;
+  z-index: 100;
+  transform: none !important;
+  opacity: 1 !important; */
+}
+
+.greeting-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.time-display {
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  text-align: center;
+}
+
+.date-display {
+  font-size: 1rem;
+  opacity: 0.85;
+  text-align: center;
+}
+
+.greeting-text {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+  text-align: center;
+}
+
+.name-display {
+  font-size: 0.95rem;
+  opacity: 0.9;
+  text-align: center;
+  display: none;
+}
+
+.name-editor {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.25rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.name-editor input {
+  padding: 0.35rem 0.6rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.15);
+  color: var(--color-text-on-header);
+  font-size: 0.9rem;
+}
+
+.name-editor input::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+/* ===== Icon Buttons ===== */
+.icon-btn {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: var(--color-text-on-header);
+  border-radius: 8px;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.15s;
+  margin-top: 0.5rem;
+}
+
+.icon-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+/* ===== Main Grid ===== */
+.dashboard-main {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  transition: all 0.5s ease-in-out;
+}
+
+/* ===== Footer ===== */
+.dashboard-footer {
+  padding: 0 1.5rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ===== Widget Cards ===== */
+.widget {
+  background-color: var(--color-surface);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--color-border);
+}
+
+.widget h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+}
+
+/* ===== Timer Widget ===== */
+.timer-display {
+  font-size: 3.5rem;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.05em;
+  color: var(--color-accent);
+  margin: 0.5rem 0 1rem;
+}
+
+.timer-controls {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.timer-config {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+}
+
+.timer-config label {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.timer-config input[type="number"] {
+  width: 5rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+/* ===== Buttons ===== */
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  padding: 0.45rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  background-color: var(--color-btn-primary);
+  color: var(--color-btn-primary-text);
+  transition: opacity 0.15s, background-color 0.15s;
+}
+
+button:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+button.btn-danger {
+  background-color: var(--color-btn-danger);
+  color: #fff;
+}
+
+button.btn-secondary {
+  background-color: transparent;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+button.btn-secondary:hover:not(:disabled) {
+  background-color: var(--color-border);
+  opacity: 1;
+}
+
+/* ===== Task Widget ===== */
+.task-input-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.task-input-row input {
+  flex: 1;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+.task-sort-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.task-sort-row select {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.85rem;
+}
+
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  transition: background 0.1s;
+}
+
+.task-item:hover {
+  background: var(--color-surface);
+}
+
+.task-item label {
+  flex: 1;
+  font-size: 0.9rem;
+  cursor: pointer;
+  word-break: break-word;
+}
+
+.task-item--done label {
+  text-decoration: line-through;
+  color: var(--color-task-done);
+}
+
+.task-item input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  accent-color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.task-item .task-edit-input {
+  flex: 1;
+  padding: 0.25rem 0.4rem;
+  border: 1px solid var(--color-accent);
+  border-radius: 4px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+.task-item-actions {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.task-item-actions button {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.task-empty-msg {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin-top: 0.75rem;
+  text-align: center;
+}
+
+/* ===== Quick Links Widget ===== */
+.link-input-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.link-input-row input {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+.link-input-row input:first-child {
+  width: 8rem;
+}
+
+.link-input-row input:nth-child(2) {
+  flex: 1;
+  min-width: 10rem;
+}
+
+.links-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.link-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.link-btn {
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  background-color: var(--color-accent);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.link-btn:hover {
+  opacity: 0.85;
+}
+
+.link-delete-btn {
+  background: transparent;
+  color: var(--color-text-muted);
+  border: none;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.link-delete-btn:hover {
+  color: var(--color-btn-danger);
+  background: transparent;
+  opacity: 1;
+}
+
+/* ===== Responsive Breakpoint ===== */
+@media (max-width: 768px) {
+  .dashboard-main {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-header {
+    padding: 1.25rem;
+  }
+
+  .time-display {
+    font-size: 2.25rem;
+  }
+
+  .timer-display {
+    font-size: 2.5rem;
+  }
+
+  .link-input-row {
+    flex-direction: column;
+  }
+
+  .link-input-row input:first-child,
+  .link-input-row input:nth-child(2) {
+    width: 100%;
+  }
+  #timer-heading, 
+  #tasks-heading, 
+  #links-heading {
+      text-align: center;
+  }
+}

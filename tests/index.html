@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do Life Dashboard — Test Suite</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 1rem 2rem;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    #summary {
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      background: #e0e0e0;
+    }
+
+    #summary.all-pass { background: #d4edda; color: #155724; }
+    #summary.has-fail  { background: #f8d7da; color: #721c24; }
+
+    .suite {
+      margin-bottom: 1.5rem;
+    }
+
+    .suite-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      padding: 0.4rem 0.75rem;
+      background: #ddd;
+      border-radius: 4px;
+    }
+
+    .test-result {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 0.25rem;
+      font-size: 0.9rem;
+    }
+
+    .test-result.pass { background: #f0fff4; }
+    .test-result.fail { background: #fff0f0; }
+
+    .badge {
+      flex-shrink: 0;
+      font-weight: bold;
+      font-size: 0.75rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      margin-top: 0.1rem;
+    }
+
+    .badge.pass { background: #28a745; color: #fff; }
+    .badge.fail { background: #dc3545; color: #fff; }
+
+    .test-name { flex: 1; }
+
+    .error-detail {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.8rem;
+      color: #c0392b;
+      font-family: monospace;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Minimal DOM stubs required by app.js modules -->
+  <!-- These are hidden and only exist so App.init() doesn't throw -->
+  <div style="display:none">
+    <div id="warning-banner" class="hidden"><span id="warning-message"></span><button id="warning-close"></button></div>
+    <div id="time"></div>
+    <div id="date"></div>
+    <div id="greeting-text"></div>
+    <span id="name-display"></span>
+    <div id="name-editor" class="hidden">
+      <input id="name-input" type="text">
+      <button id="name-save"></button>
+      <button id="name-cancel"></button>
+    </div>
+    <button id="edit-name-btn"></button>
+    <button id="theme-toggle"></button>
+    <div id="timer-display"></div>
+    <button id="start-btn"></button>
+    <button id="stop-btn" disabled></button>
+    <button id="reset-btn"></button>
+    <input id="duration-input" type="number" value="25">
+    <button id="set-duration-btn"></button>
+    <span id="duration-error" class="hidden"></span>
+    <input id="task-input" type="text">
+    <button id="add-task-btn"></button>
+    <span id="task-error" class="hidden"></span>
+    <select id="sort-select">
+      <option value="default">Default</option>
+      <option value="az">A–Z</option>
+      <option value="za">Z–A</option>
+      <option value="completed-last">Completed last</option>
+      <option value="completed-first">Completed first</option>
+    </select>
+    <ul id="task-list"></ul>
+    <p id="task-empty-msg"></p>
+    <input id="link-label-input" type="text">
+    <input id="link-url-input" type="url">
+    <button id="add-link-btn"></button>
+    <span id="link-error" class="hidden"></span>
+    <div id="links-container"></div>
+  </div>
+
+  <h1>To-Do Life Dashboard — Test Suite</h1>
+  <div id="summary">Running tests…</div>
+  <div id="results"></div>
+
+  <!-- Load fast-check for property-based tests -->
+  <script src="https://cdn.jsdelivr.net/npm/fast-check/lib/bundle/fast-check.min.js"></script>
+
+  <!-- Load the main application (defines Storage, Theme, Greeting, Timer, Tasks, QuickLinks, App as globals) -->
+  <script src="../js/app.js"></script>
+
+  <!-- ============================================================
+       Minimal test runner
+       Provides: test(name, fn), assert(condition, message), propertyTest(name, fn)
+       ============================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      // ── State ──────────────────────────────────────────────────
+      const _suites = [];
+      let _currentSuite = null;
+
+      // ── Public API ─────────────────────────────────────────────
+
+      /** Register a unit test */
+      window.test = function test(name, fn) {
+        if (!_currentSuite) {
+          _currentSuite = { name: '(ungrouped)', results: [] };
+          _suites.push(_currentSuite);
+        }
+        let status = 'pass';
+        let error = null;
+        try {
+          fn();
+        } catch (e) {
+          status = 'fail';
+          error = e.message || String(e);
+        }
+        _currentSuite.results.push({ name, status, error });
+      };
+
+      /** Register a property-based test (uses fast-check) */
+      window.propertyTest = function propertyTest(name, fn) {
+        if (!_currentSuite) {
+          _currentSuite = { name: '(ungrouped)', results: [] };
+          _suites.push(_currentSuite);
+        }
+        let status = 'pass';
+        let error = null;
+        try {
+          fn();
+        } catch (e) {
+          status = 'fail';
+          // fast-check provides a detailed message including the counterexample
+          error = e.message || String(e);
+        }
+        _currentSuite.results.push({ name, status, error });
+      };
+
+      /** Simple assertion helper */
+      window.assert = function assert(condition, message) {
+        if (!condition) {
+          throw new Error(message || 'Assertion failed');
+        }
+      };
+
+      /** Start a named test suite (groups tests in the UI) */
+      window.suite = function suite(name) {
+        _currentSuite = { name, results: [] };
+        _suites.push(_currentSuite);
+      };
+
+      // ── Rendering ──────────────────────────────────────────────
+      function render() {
+        const resultsEl = document.getElementById('results');
+        const summaryEl = document.getElementById('summary');
+        let totalPass = 0;
+        let totalFail = 0;
+
+        resultsEl.innerHTML = '';
+
+        _suites.forEach(s => {
+          const suiteEl = document.createElement('div');
+          suiteEl.className = 'suite';
+
+          const titleEl = document.createElement('div');
+          titleEl.className = 'suite-title';
+          titleEl.textContent = s.name;
+          suiteEl.appendChild(titleEl);
+
+          s.results.forEach(r => {
+            if (r.status === 'pass') totalPass++; else totalFail++;
+
+            const row = document.createElement('div');
+            row.className = `test-result ${r.status}`;
+
+            const badge = document.createElement('span');
+            badge.className = `badge ${r.status}`;
+            badge.textContent = r.status === 'pass' ? 'PASS' : 'FAIL';
+
+            const nameEl = document.createElement('span');
+            nameEl.className = 'test-name';
+            nameEl.textContent = r.name;
+
+            row.appendChild(badge);
+            row.appendChild(nameEl);
+
+            if (r.error) {
+              const errEl = document.createElement('span');
+              errEl.className = 'error-detail';
+              errEl.textContent = r.error;
+              nameEl.appendChild(errEl);
+            }
+
+            suiteEl.appendChild(row);
+          });
+
+          resultsEl.appendChild(suiteEl);
+        });
+
+        const total = totalPass + totalFail;
+        summaryEl.textContent = `${totalPass} / ${total} tests passed  ·  ${totalFail} failed`;
+        summaryEl.className = totalFail === 0 ? 'all-pass' : 'has-fail';
+      }
+
+      // Run render after all scripts have loaded
+      window.addEventListener('load', render);
+    })();
+  </script>
+
+  <!-- ============================================================
+       Unit test files — each file calls suite() then test()
+       ============================================================ -->
+  <script>suite('Unit: Greeting');</script>
+  <script src="unit/greeting.test.js"></script>
+
+  <script>suite('Unit: Timer');</script>
+  <script src="unit/timer.test.js"></script>
+
+  <script>suite('Unit: Tasks');</script>
+  <script src="unit/tasks.test.js"></script>
+
+  <script>suite('Unit: QuickLinks');</script>
+  <script src="unit/quicklinks.test.js"></script>
+
+  <script>suite('Unit: Storage');</script>
+  <script src="unit/storage.test.js"></script>
+
+  <!-- ============================================================
+       Property test files — each file calls propertyTest()
+       ============================================================ -->
+  <script>suite('Property: Greeting');</script>
+  <script src="property/greeting.property.js"></script>
+
+  <script>suite('Property: Timer');</script>
+  <script src="property/timer.property.js"></script>
+
+  <script>suite('Property: Tasks / Timer Duration');</script>
+  <script src="property/tasks.property.js"></script>
+
+  <script>suite('Property: QuickLinks');</script>
+  <script src="property/quicklinks.property.js"></script>
+
+  <script>suite('Property: Storage');</script>
+  <script src="property/storage.property.js"></script>
+
+</body>
+</html>
